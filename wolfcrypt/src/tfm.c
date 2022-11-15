@@ -35,6 +35,8 @@
     #include <config.h>
 #endif
 
+#include <immintrin.h>
+
 /* in case user set USE_FAST_MATH there */
 #include <wolfssl/wolfcrypt/settings.h>
 #ifdef NO_INLINE
@@ -1734,6 +1736,8 @@ static int _fp_exptmod(fp_int * G, fp_int * X, int digits, fp_int * P,
       buf    = X->dp[digidx--];
       bitcnt = (int)DIGIT_BIT;
     }
+    _mm_clflush((void*)fp_sqr);
+    _mm_sfence();
 
     /* grab the next msb from the exponent */
     y     = (int)(buf >> (DIGIT_BIT - 1)) & 1;
